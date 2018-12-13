@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "description": "An upgraded version of Meteor subscribe, which helps optimize data and performance!",
   "main": "hypersubs.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Hieu Lam <lamhieu.vk@gmail.com>",
   "license": "MIT",
   "devDependencies": {
