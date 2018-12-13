@@ -24,3 +24,18 @@ All the rest of the packages are automatically made for you, no need to change a
 [travis-image]: https://travis-ci.com/lamhieu-vk/hypersubs.svg?branch=master
 [github-issues-image]: https://img.shields.io/github/issues/lamhieu-vk/hypersubs.svg
 [github-issues-url]: https://github.com/lamhieu-vk/hypersubs/issues
+
+
+## How it work?
+
+On the page, every time you call `Meteor.subscribe`, the system will create a` subscription` and start its workflow, it will send the request to the server, and get back in the message returned from the server. When you call `Meteor.subscribe` with the same arguments and names in multiple locations, the system creates separate connections, so there is a need for unnecessary connections!
+
+### For example:
+
+#### default
+
+At element A, we call `Meteor.subscribe('getData', '_id')` and somewhere in the page (many other elements) also call `Meteor.subscribe('getData', '_id')` each time you call to it the system thing will create a server communication connection! **things are not re-used!**
+
+#### with hpersubs
+
+At immortality A, we call `Meteor.subscribe('getData', '_id')` and somewhere in the page, even if you recall something like that, we only created one communication line with the server. and it is re-used! **The server you are working less, the speed of subscribe feedback is returned immediately!**
