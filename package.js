@@ -1,9 +1,9 @@
 Package.describe({
   name: 'lamhieu:hypersubs',
-  version: '0.0.2',
+  version: '0.0.3',
   summary: 'An upgraded version of Meteor subscribe, which helps optimize data and performance!',
   git: 'https://github.com/lamhieu-vk/hypersubs.git',
-  documentation: 'README.md'
+  documentation: 'README.md',
 })
 
 Package.onUse(function(api) {
@@ -19,5 +19,5 @@ Package.onTest(function(api) {
 })
 
 Npm.depends({
-  'object-hash': '1.3.1'
+  'object-hash': '1.3.1',
 })
