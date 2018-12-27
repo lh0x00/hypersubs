@@ -9,6 +9,10 @@
     "eslint": "^5.10.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2"
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "standard-version": "^4.4.0"
+  },
+  "scripts": {
+    "release": "standard-version"
   }
 }
