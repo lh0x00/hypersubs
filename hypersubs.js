@@ -147,7 +147,7 @@ function applyHyperSubs() {
      * Check should stop original subscription
      */
     const checkShouldStopOriginalSubscription = () =>
-      listSubscriptions.filter(sub => sub.token === tokenOfSubscription).length <= 1
+      Object.values(self._subscriptions).filter(sub => sub.token === tokenOfSubscription).length <= 1
 
     const shouldTrackingForVirtualSubscription = !isOriginalSubscription && Tracker.active
     if (shouldTrackingForVirtualSubscription) {
@@ -155,7 +155,7 @@ function applyHyperSubs() {
         const handleIsReady = getReadyOfRealSubscription()
         const record = self._subscriptions[id]
         const isSameStateOfReady = record.ready === handleIsReady
-        const isFirstRun = computation.firstRun
+        const { firstRun: isFirstRun } = computation || {}
         if (isFirstRun || (!record.inactive && !isSameStateOfReady)) {
           record.ready = handleIsReady
           record.readyDeps.changed()
