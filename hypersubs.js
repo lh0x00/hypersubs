@@ -18,10 +18,19 @@ export const CONST = {
 
 export const name = 'hypersubs'
 
+export const config = {
+  isOverride: true,
+}
+
 /**
  * Apply hypersubs worker
  */
 function applyHyperSubs() {
+  const isNotFoundConnect = !Meteor.connection || !Meteor.subscribe
+  if (isNotFoundConnect) {
+    throw new Error('Not found Meteor connect')
+  }
+
   const shouldPreventBinding = !!(Meteor.subscribe && Meteor.subscribe.isHyperSubs)
   if (shouldPreventBinding) {
     return true
@@ -141,8 +150,6 @@ function applyHyperSubs() {
       subscriptionId: id,
     }
 
-    const listSubscriptions = Object.values(self._subscriptions)
-
     /**
      * Check should stop original subscription
      */
@@ -252,12 +259,21 @@ function applyHyperSubs() {
     return handle
   }
 
-  // override Meteor subscribe function
-  Meteor.subscribe = overrideSubscribe.bind(originalConnection)
-  Meteor.subscribe.isHyperSubs = true
+  const { isOverride = true } = config || {}
 
-  // backup originalSubscribe
-  Meteor.originalSubscribe = originalSubscribe
+  overrideSubscribe.isHyperSubs = true
+
+  const fnSubscribe = overrideSubscribe.bind(originalConnection)
+
+  Meteor.hyperSubscribe = fnSubscribe
+
+  if (isOverride) {
+    // override Meteor subscribe function
+    Meteor.subscribe = fnSubscribe
+
+    // backup originalSubscribe
+    Meteor.originalSubscribe = originalSubscribe
+  }
 
   return true
 }
