@@ -39,3 +39,32 @@ At element A, we call `Meteor.subscribe('getData', '_id')` and somewhere in the 
 #### with hpersubs
 
 At immortality A, we call `Meteor.subscribe('getData', '_id')` and somewhere in the page, even if you recall something like that, we only created one communication line with the server. and it is re-used! **The server you are working less, the speed of subscribe feedback is returned immediately!**
+
+
+### Options
+
+Default options:
+```javascript
+const options = {
+  isOverride: true, // is override original Meteor.subscribe
+}
+```
+
+#### How to config options?
+
+Default, you can use **hypersubs** without config but you want custom config you can do this
+
+```javascript
+import { config } from 'meteor/lamhieu:hypersubs';
+
+// if you don't want override original Meteor.subscribe
+config.isOverride = false;
+```
+
+### Usage
+
+Default **hypersubs** is add to Meteor variable, you can use by call `Meteor.hyperSubscribe` like `Meteor.subscribe`!
+
+If set `isOverride: true` you don't need change any code in your source because `Meteor.subscribe` will replace by `Meteor.hyperSubscribe`, and you can call original susbcribe by call `Meteor.originalSubscribe`
+
+If set `isOverride: false` when you want use **hypersubs** you need call `Meteor.hyperSubscribe`
