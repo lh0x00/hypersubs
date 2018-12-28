@@ -1,6 +1,6 @@
 Package.describe({
   name: 'lamhieu:hypersubs',
-  version: '0.1.4',
+  version: '0.2.1',
   summary: 'An upgraded version of Meteor subscribe, which helps optimize data and performance!',
   git: 'https://github.com/lamhieu-vk/hypersubs.git',
   documentation: 'README.md'
@@ -9,7 +9,6 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.2')
   api.use(['ecmascript', 'random', 'ejson', 'ddp-client'])
-  api.mainModule('hypersubs.js')
   api.mainModule('hypersubs.js')
 })
 
