@@ -63,8 +63,38 @@ config.isOverride = false;
 
 ### Usage
 
+#### Meteor
+
 Default **hypersubs** is add to Meteor variable, you can use by call `Meteor.hyperSubscribe` like `Meteor.subscribe`!
 
 If set `isOverride: true` you don't need change any code in your source because `Meteor.subscribe` will replace by `Meteor.hyperSubscribe`, and you can call original susbcribe by call `Meteor.originalSubscribe`
 
 If set `isOverride: false` when you want use **hypersubs** you need call `Meteor.hyperSubscribe`
+
+#### DDP
+
+Default when if set `isOverride: true` when you call `DDP.connect(url)` to create new connection, it will return a connection wrapped by **hypersubs** (called by `hyperConnection`), `DD.subscribe` inside `DDP` is a `hyperSusbcribe`.
+
+#### Check
+
+To check a connection is wrapped by **hypersubs**
+```javascript
+// DDP
+const ddp = DDP.connect(url);
+if (ddp.isHyperConnection) {
+  // is hyperConnection
+}
+
+// Meteor
+const subscribe = Meteor.subscribe; // or DDP.subscribe
+if (subscribe.isHyperSubscribe) {
+  // is hyperSubscribe
+}
+
+// Handle
+const handle = Meteor.subscribe('publicationName', 'test'); // or
+const handle = Meteor.hyperSubscribe('publicationName', 'test');
+if (handle.isHyperHandle) {
+  // is hyperHandle
+}
+```
