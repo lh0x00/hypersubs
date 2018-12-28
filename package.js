@@ -3,12 +3,13 @@ Package.describe({
   version: '0.1.4',
   summary: 'An upgraded version of Meteor subscribe, which helps optimize data and performance!',
   git: 'https://github.com/lamhieu-vk/hypersubs.git',
-  documentation: 'README.md',
+  documentation: 'README.md'
 })
 
 Package.onUse(function(api) {
   api.versionsFrom('1.2')
-  api.use(['ecmascript', 'random', 'ejson'])
+  api.use(['ecmascript', 'random', 'ejson', 'ddp-client'])
+  api.mainModule('hypersubs.js')
   api.mainModule('hypersubs.js')
 })
 
@@ -19,5 +20,5 @@ Package.onTest(function(api) {
 })
 
 Npm.depends({
-  'object-hash': '1.3.1',
+  'object-hash': '1.3.1'
 })
