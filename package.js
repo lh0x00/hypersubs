@@ -1,6 +1,6 @@
 Package.describe({
   name: 'lamhieu:hypersubs',
-  version: '0.1.0',
+  version: '0.1.4',
   summary: 'An upgraded version of Meteor subscribe, which helps optimize data and performance!',
   git: 'https://github.com/lamhieu-vk/hypersubs.git',
   documentation: 'README.md',
