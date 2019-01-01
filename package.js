@@ -8,7 +8,7 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.2')
-  api.use(['ecmascript', 'random', 'ejson', 'ddp-client@2.2.0'])
+  api.use(['ecmascript', 'random', 'ejson', 'ddp-client'])
   api.mainModule('hypersubs.js')
 })
 
