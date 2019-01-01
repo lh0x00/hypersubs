@@ -2,7 +2,7 @@ import { Random } from 'meteor/random'
 import { EJSON } from 'meteor/ejson'
 import { Tracker } from 'meteor/tracker'
 import { DDP } from 'meteor/ddp-client'
-import { argsParser, hasOwn, generateToken, checkCallbacksIsValid } from './utils'
+import { argsParser, hasOwn, generateToken, isFunction } from './utils'
 
 export const CONST = {
   CALLBACK_TYPES: {
@@ -108,7 +108,7 @@ function createSubscription(data, options) {
       const handleIsReady = getReadyOfRealSubscription()
       const record = self._subscriptions[id]
       if (handleIsReady && !record.ready && !record.inactive) {
-        record.ready = true
+        record.ready = handleIsReady
         if (callbacks.onReady) {
           callbacks.onReady()
         }
@@ -184,47 +184,43 @@ function overrideSubscribe() {
   const self = this
 
   const data = argsParser.apply(self, arguments)
-  const { name, params, callbacks } = data
+  const { name, params } = data
 
   const tokenOfSubscription = generateToken([name, ...params])
   self._listHandleOfHyperSubs = self._listHandleOfHyperSubs || {}
   if (!hasOwn.call(self._listHandleOfHyperSubs, tokenOfSubscription)) {
     // create real subscription to get data
-    let overrideCallbacks
+    const typeOfCallbacks = Object.values(CONST.CALLBACK_TYPES)
+    const callbackReducer = (acc, typeOfCallback) => {
+      const nameOfCallback = CONST.CALLBACK_NAMES[typeOfCallback]
+      function callback() {
+        const args = arguments
+        const listSubscriptions = Object.values(self._subscriptions)
+        const checkIfCallbackValid = sub => !sub.isOriginalSubscription && sub.token === tokenOfSubscription
+        const subscriptions = listSubscriptions.filter(checkIfCallbackValid)
+        subscriptions.forEach(sub => {
+          const callback = sub[nameOfCallback]
 
-    const isHaveCallbacks = checkCallbacksIsValid(callbacks)
-    if (isHaveCallbacks) {
-      const typeOfCallbacks = Object.values(CONST.CALLBACK_TYPES)
-      const callbackReducer = (acc, typeOfCallback) => {
-        if (!callbacks[typeOfCallback]) return acc
-        const nameOfCallback = CONST.CALLBACK_NAMES[typeOfCallback]
-        function callback() {
-          const args = arguments
-          const listSubscriptions = Object.values(self._subscriptions)
-          const checkIfCallbackValid = sub => !sub.isOriginalSubscription && sub.token === tokenOfSubscription
-          const subscriptions = listSubscriptions.filter(checkIfCallbackValid)
-          subscriptions.forEach(sub => {
-            const callback = sub[nameOfCallback]
-            if (!callback) return false
+          const shouldChangeToReady = typeOfCallback === CONST.CALLBACK_TYPES.ON_READY && !sub.ready
+          if (shouldChangeToReady) {
+            sub.ready = true
+            sub.readyDeps.changed()
+          }
 
-            if (typeOfCallback === CONST.CALLBACK_TYPES.ON_READY) {
-              if (sub.ready) return false
-              sub.ready = true
-              callback.apply(this, args)
-              sub.readyDeps.changed()
-              return true
-            }
+          const shouldCallback = isFunction(callback)
+          if (shouldCallback) {
             callback.apply(this, args)
-            return true
-          })
-        }
-        return {
-          ...acc,
-          [typeOfCallback]: callback,
-        }
+          }
+          return true
+        })
       }
-      overrideCallbacks = typeOfCallbacks.reduce(callbackReducer, Object.create(null))
+
+      return {
+        ...acc,
+        [typeOfCallback]: callback,
+      }
     }
+    const overrideCallbacks = typeOfCallbacks.reduce(callbackReducer, Object.create(null))
 
     self._listHandleOfHyperSubs[tokenOfSubscription] = createSubscription.apply(self, [
       { name, params, callbacks: overrideCallbacks },
@@ -253,7 +249,7 @@ export function upgradeSubscribe(originalSubscribe) {
   const self = this
   const isNotFoundSubscribe = !originalSubscribe
   if (isNotFoundSubscribe) {
-    throw new Error('Not found DDP subscribe')
+    throw new Error('Not found DDP subscribe, subscribe:', originalSubscribe)
   }
 
   const shouldPreventBinding = !!(originalSubscribe && originalSubscribe.isHyperSubscribe)
@@ -274,7 +270,7 @@ export function upgradeSubscribe(originalSubscribe) {
 export function upgradeDDPConnect(ddp, overrideConfig) {
   const originalConnect = ddp && ddp.connect
   if (!originalConnect) {
-    throw new Error('Not found DDP connect')
+    throw new Error('Not found DDP connect, DDP:', ddp)
   }
 
   ddp.connect = function overrideDDPConnect(...rest) {

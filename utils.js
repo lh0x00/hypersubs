@@ -8,9 +8,6 @@ export const isFunction = f => typeof f === 'function'
 
 export const generateToken = params => hashObject([...params])
 
-export const checkCallbacksIsValid = callbacks =>
-  typeof callbacks === 'object' && Object.values(callbacks).filter(Boolean).length > 0
-
 export function argsParser(name) {
   const params = slice.call(arguments, 1)
   let callbacks = Object.create(null)
