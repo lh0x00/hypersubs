@@ -1,6 +1,6 @@
 {
   "name": "hypersubs",
-  "version": "0.3.0",
+  "version": "0.3.3",
   "description": "An upgraded version of Meteor subscribe, which helps optimize data and performance!",
   "main": "hypersubs.js",
   "author": "Hieu Lam <lamhieu.vk@gmail.com>",
