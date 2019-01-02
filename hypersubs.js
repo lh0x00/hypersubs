@@ -4,6 +4,8 @@ import { Tracker } from 'meteor/tracker'
 import { DDP } from 'meteor/ddp-client'
 import { argsParser, hasOwn, generateToken, isFunction } from './utils'
 
+export { stats, autoPrintStats } from './utils'
+
 export const CONST = {
   CALLBACK_TYPES: {
     ON_READY: 'onReady',
