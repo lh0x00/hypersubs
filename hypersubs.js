@@ -99,6 +99,7 @@ function createSubscription(data, options) {
         }
       },
       isOriginalSubscription,
+      isHyperSubscription: true,
     }
 
     if (isOriginalSubscription) {
@@ -139,8 +140,7 @@ function createSubscription(data, options) {
   /**
    * Check should stop original subscription
    */
-  const checkShouldStopOriginalSubscription = () =>
-    Object.values(self._subscriptions).filter(sub => sub.token === tokenOfSubscription).length <= 1
+  const checkShouldStopOriginalSubscription = () => Object.values(self._subscriptions).filter(sub => !sub.isOriginalSubscription && sub.token === tokenOfSubscription).length === 0
 
   const shouldTrackingForVirtualSubscription = !isOriginalSubscription && Tracker.active
   if (shouldTrackingForVirtualSubscription) {
@@ -159,6 +159,7 @@ function createSubscription(data, options) {
       if (hasOwn.call(self._subscriptions, id)) {
         self._subscriptions[id].inactive = true
       }
+
       Tracker.afterFlush(() => {
         if (hasOwn.call(self._subscriptions, id) && self._subscriptions[id].inactive) {
           handle.stop()
