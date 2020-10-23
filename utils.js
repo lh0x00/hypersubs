@@ -13,6 +13,14 @@ export function argsParser(name) {
   let callbacks = Object.create(null)
   if (params.length) {
     const lastParam = params[params.length - 1]
+    if (lastParam === undefined) {
+      return {
+        name,
+        params,
+        callbacks
+      };
+    }
+
     const listCallbacks = [lastParam.onReady, lastParam.onError, lastParam.onStop]
     if (isFunction(lastParam)) {
       callbacks.onReady = params.pop()
