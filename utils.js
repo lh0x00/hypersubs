@@ -13,7 +13,7 @@ export function argsParser(name) {
   let callbacks = Object.create(null)
   if (params.length) {
     const lastParam = params[params.length - 1]
-    if (lastParam === undefined) {
+    if (lastParam === undefined || lastParam === null) {
       return {
         name,
         params,
